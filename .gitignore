@@ -22,6 +22,8 @@ typechain-types
 types/ethers-contracts
 dist-hardhat
 
+.claude/scheduled_tasks.lock
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

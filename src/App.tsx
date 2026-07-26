@@ -32,7 +32,6 @@ function App() {
 
   const [contractOwner, setContractOwner] = useState<string | null>(null);
   const [rewardPoolBalance, setRewardPoolBalance] = useState<bigint>(0n);
-  const [currentStakeAmount, setCurrentStakeAmount] = useState<bigint>(0n);
   const [stakeStates, setStakeStates] = useState<Record<string, StudentStakeState>>({});
   const [txPending, setTxPending] = useState<{
     startRound: boolean;
@@ -79,12 +78,12 @@ function App() {
     penaltyAmountInput: string,
   ) => {
     setActionError(null);
-    const stakeAmount = staking.toBaseUnits(stakeAmountInput);
-    const rewardAmount = staking.toBaseUnits(rewardAmountInput);
-    const penaltyAmount = staking.toBaseUnits(penaltyAmountInput);
-
     setTxPending((prev) => ({ ...prev, startRound: true }));
     try {
+      const stakeAmount = staking.toBaseUnits(stakeAmountInput);
+      const rewardAmount = staking.toBaseUnits(rewardAmountInput);
+      const penaltyAmount = staking.toBaseUnits(penaltyAmountInput);
+
       await staking.startRound(stakeAmount, rewardAmount, penaltyAmount);
       setRaisedHands(new Set());
       setPool([]);
@@ -93,7 +92,6 @@ function App() {
       setSpinTarget(null);
       setLastResult(null);
       setStakeStates({});
-      setCurrentStakeAmount(stakeAmount);
       setPhase("collecting");
       await refreshPoolBalance();
     } catch (err) {
@@ -119,7 +117,8 @@ function App() {
 
     try {
       setStakeStates((prev) => ({ ...prev, [studentId]: { status: "approving" } }));
-      await staking.ensureAllowance(address, currentStakeAmount);
+      const stakeAmount = await staking.currentStakeAmount();
+      await staking.ensureAllowance(address, stakeAmount);
 
       setStakeStates((prev) => ({ ...prev, [studentId]: { status: "staking" } }));
       await staking.stake(toStudentIdHash(studentId));

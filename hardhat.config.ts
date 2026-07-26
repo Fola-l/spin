@@ -1,6 +1,8 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
 import { configVariable, defineConfig } from "hardhat/config";
+
+dotenv.config({ quiet: true });
 
 export default defineConfig({
   plugins: [hardhatToolboxMochaEthersPlugin],

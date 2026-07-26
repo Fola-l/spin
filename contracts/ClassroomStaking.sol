@@ -91,7 +91,7 @@ contract ClassroomStaking is Ownable, ReentrancyGuard {
         uint256 stakeAmount_,
         uint256 rewardAmount_,
         uint256 penaltyAmount_
-    ) external onlyOwner {
+    ) external onlyOwner nonReentrant {
         if (penaltyAmount_ > stakeAmount_) revert PenaltyExceedsStake();
         if (rewardPool < rewardAmount_) revert InsufficientPool();
 

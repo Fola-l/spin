@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BrowserProvider, type JsonRpcSigner } from "ethers";
 import "./ethereum.d.ts";
 
@@ -102,5 +102,8 @@ export function useWallet(): UseWalletResult {
     };
   }, [refreshAccountsAndChain]);
 
-  return { ...state, connect, getProvider, getSigner };
+  return useMemo(
+    () => ({ ...state, connect, getProvider, getSigner }),
+    [state, connect, getProvider, getSigner],
+  );
 }

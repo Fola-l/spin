@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Contract, MaxUint256, type ContractTransactionReceipt } from "ethers";
 import { ERC20_ABI, STAKING_ABI } from "./abi";
 import { FLD_TOKEN_ADDRESS, STAKING_CONTRACT_ADDRESS } from "./config";
@@ -15,6 +15,7 @@ export interface UseStakingContractResult {
   owner: () => Promise<string | null>;
   roundStatus: () => Promise<bigint>;
   rewardPool: () => Promise<bigint>;
+  currentStakeAmount: () => Promise<bigint>;
   stakedAmountOf: (studentIdHash: string) => Promise<bigint>;
   walletToStudent: (address: string) => Promise<string>;
   ensureAllowance: (ownerAddress: string, amount: bigint) => Promise<void>;
@@ -148,6 +149,12 @@ export function useStakingContract(wallet: UseWalletResult): UseStakingContractR
     return (await contract.rewardPool()) as bigint;
   }, [getReadContract]);
 
+  const currentStakeAmount = useCallback(async (): Promise<bigint> => {
+    const contract = getReadContract();
+    if (!contract) return 0n;
+    return (await contract.currentStakeAmount()) as bigint;
+  }, [getReadContract]);
+
   const stakedAmountOf = useCallback(
     async (studentIdHash: string): Promise<bigint> => {
       const contract = getReadContract();
@@ -229,22 +236,44 @@ export function useStakingContract(wallet: UseWalletResult): UseStakingContractR
     [getWriteContract, runWrite],
   );
 
-  return {
-    decimals,
-    decimalsAssumed,
-    toBaseUnits,
-    fromBaseUnits,
-    owner,
-    roundStatus,
-    rewardPool,
-    stakedAmountOf,
-    walletToStudent,
-    ensureAllowance,
-    startRound,
-    lockRound,
-    stake,
-    resolveCorrect,
-    resolveWrong,
-    fundPool,
-  };
+  return useMemo(
+    () => ({
+      decimals,
+      decimalsAssumed,
+      toBaseUnits,
+      fromBaseUnits,
+      owner,
+      roundStatus,
+      rewardPool,
+      currentStakeAmount,
+      stakedAmountOf,
+      walletToStudent,
+      ensureAllowance,
+      startRound,
+      lockRound,
+      stake,
+      resolveCorrect,
+      resolveWrong,
+      fundPool,
+    }),
+    [
+      decimals,
+      decimalsAssumed,
+      toBaseUnits,
+      fromBaseUnits,
+      owner,
+      roundStatus,
+      rewardPool,
+      currentStakeAmount,
+      stakedAmountOf,
+      walletToStudent,
+      ensureAllowance,
+      startRound,
+      lockRound,
+      stake,
+      resolveCorrect,
+      resolveWrong,
+      fundPool,
+    ],
+  );
 }
