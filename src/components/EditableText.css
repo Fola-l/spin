@@ -1,0 +1,30 @@
+.editable-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.editable-text-edit-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--accent);
+  opacity: 0.55;
+  padding: 0;
+  line-height: 1;
+}
+
+.editable-text-edit-btn:hover {
+  opacity: 1;
+}
+
+.editable-text-input {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface-raised);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  padding: 0.1em 0.4em;
+  max-width: 100%;
+}

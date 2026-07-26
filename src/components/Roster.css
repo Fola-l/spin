@@ -1,0 +1,83 @@
+.roster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.7rem;
+  width: 100%;
+}
+
+.student-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 2px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.95rem;
+  cursor: default;
+  transition: all 0.15s ease;
+}
+
+.student-card.clickable {
+  cursor: pointer;
+}
+
+.student-card.clickable:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.student-card.raised {
+  border-color: var(--good);
+}
+
+.student-card.eliminated {
+  border-color: var(--critical);
+  color: var(--ink-muted);
+  text-decoration: line-through;
+}
+
+.student-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  background: var(--surface-raised);
+}
+
+.student-name {
+  font-weight: 500;
+  text-align: left;
+}
+
+.student-badge {
+  flex: none;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.45rem;
+  border-radius: 2px;
+  border: 1px solid transparent;
+}
+
+.student-badge.raised {
+  color: var(--good);
+  border-color: var(--good);
+}
+
+.student-badge.out {
+  color: var(--critical);
+  border-color: var(--critical);
+}
+
+.student-badge.pending {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.student-badge.error {
+  color: var(--critical);
+  border-color: var(--critical);
+  background: var(--critical-bg);
+}

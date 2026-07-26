@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes playwright --version)",
+      "Bash(npm uninstall *)",
+      "Bash(npm view *)"
+    ]
+  }
+}
