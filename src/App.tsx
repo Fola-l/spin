@@ -51,6 +51,47 @@ function App() {
     void refreshPoolBalance();
   }, [staking, refreshPoolBalance]);
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const status = await staking.roundStatus();
+      if (cancelled) return;
+
+      // None or Closed — nothing active on-chain, "idle" is correct as-is.
+      if (status !== 1n && status !== 2n) return;
+
+      const entries = await Promise.all(
+        students.map(async (s) => {
+          const staked = await staking.stakedAmountOf(toStudentIdHash(s.id));
+          return [s.id, staked > 0n] as const;
+        }),
+      );
+      if (cancelled) return;
+
+      const stakedIds = entries.filter(([, staked]) => staked).map(([id]) => id);
+      setRaisedHands(new Set(stakedIds));
+      setStakeStates(
+        Object.fromEntries(stakedIds.map((id) => [id, { status: "staked" as const }])),
+      );
+
+      if (status === 1n) {
+        setPhase("collecting");
+      } else {
+        setPool(stakedIds);
+        setPhase("locked");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // Intentionally run once on mount only (empty deps): this rehydrates local
+    // state from the chain after a page reload. Re-running it every time the
+    // wallet/account changes would clobber in-session-only UI state (like the
+    // "selected" phase after a spin) that has no on-chain equivalent to
+    // rehydrate from.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const isOwnerConnected = useMemo(() => {
     if (!contractOwner || !wallet.activeAddress) return false;
     return contractOwner.toLowerCase() === wallet.activeAddress.toLowerCase();
